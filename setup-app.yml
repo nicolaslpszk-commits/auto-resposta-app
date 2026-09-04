@@ -1,0 +1,53 @@
+name: Montar e compilar Auto Resposta
+
+on:
+  push:
+    paths:
+      - '.github/workflows/setup-app.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  setup-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Criar arquivos do projeto
+        shell: bash
+        run: |
+          echo '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' | base64 -d | tar -xz
+
+      - name: Salvar projeto no repositório
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add settings.gradle build.gradle gradle.properties app README.md
+          if ! git diff --cached --quiet; then
+            git commit -m "Cria aplicativo Auto Resposta"
+            git push
+          fi
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Compilar APK
+        run: gradle assembleDebug
+
+      - name: Disponibilizar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: auto-resposta-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
