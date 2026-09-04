@@ -1,12 +1,13 @@
-# Auto Resposta
+# Auto Resposta — versão 2
 
-Aplicativo Android experimental que usa o serviço de acessibilidade para ler opções visíveis na tela e compará-las com um perfil de preferências salvo no aparelho.
+Versão sem serviço de Acessibilidade e sem clique automático.
 
-## Uso
-1. Abra o app.
-2. Escreva suas preferências e salve.
-3. Toque em **Ativar serviço de acessibilidade**.
-4. Ative **Auto Resposta** nas configurações do Android.
-5. Volte ao app e, se quiser, marque o clique automático.
+## Como funciona
+1. Salve seu perfil no app.
+2. Autorize o app a mostrar um botão flutuante.
+3. Inicie o botão e aprove a captura de tela do Android.
+4. Quando uma pergunta aparecer, toque em **Analisar tela**.
+5. O app usa reconhecimento de texto no próprio aparelho e mostra a opção que tem mais palavras em comum com seu perfil.
+6. Você decide se quer tocar nessa resposta.
 
-A primeira versão usa correspondência de palavras e evita clicar quando há empate.
+A captura funciona somente durante a sessão autorizada pelo usuário.

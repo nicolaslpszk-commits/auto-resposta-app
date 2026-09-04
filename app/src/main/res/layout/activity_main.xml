@@ -2,60 +2,78 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     android:padding="20dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Auto Resposta"
             android:textSize="28sp"
             android:textStyle="bold" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Escreva coisas que combinam com você. O app compara essas palavras com as opções visíveis na tela." />
+            android:layout_marginTop="10dp"
+            android:text="Versão segura: lê a tela somente quando você toca no botão flutuante e mostra uma sugestão. O app não toca nas respostas por você." />
+
         <EditText
             android:id="@+id/profileInput"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:layout_marginTop="12dp"
+            android:layout_height="190dp"
+            android:layout_marginTop="16dp"
             android:gravity="top|start"
-            android:hint="Ex.: gosto de handebol, esportes, sair com amigos, música..."
+            android:hint="Cole aqui seu perfil e suas preferências..."
             android:inputType="textMultiLine"
             android:padding="12dp" />
-        <CheckBox
-            android:id="@+id/autoClickCheck"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Clicar automaticamente quando houver uma opção clara" />
+
         <Button
             android:id="@+id/saveButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Salvar minhas preferências" />
+            android:layout_marginTop="10dp"
+            android:text="Salvar meu perfil" />
+
         <Button
-            android:id="@+id/accessibilityButton"
+            android:id="@+id/overlayButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="Permitir botão sobre outros apps" />
+
+        <Button
+            android:id="@+id/startButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Ativar serviço de acessibilidade" />
+            android:text="Iniciar botão flutuante" />
+
+        <Button
+            android:id="@+id/stopButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Parar botão flutuante" />
+
         <TextView
             android:id="@+id/statusText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Serviço: DESATIVADO"
+            android:text="Botão flutuante: DESATIVADO"
             android:textStyle="bold" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Versão inicial: funciona por correspondência de palavras. A escolha automática fica desligada até você ativá-la." />
+            android:text="Ao iniciar, o Android pedirá autorização para capturar a tela. Use apenas em telas que você realmente quer analisar e pare o botão quando terminar." />
+
     </LinearLayout>
 </ScrollView>

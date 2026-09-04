@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Auto Resposta</string>
-    <string name="accessibility_description">Lê textos visíveis na tela para comparar opções e, quando ativado pelo usuário, tocar na opção escolhida.</string>
 </resources>
