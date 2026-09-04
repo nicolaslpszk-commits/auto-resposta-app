@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ServiceInfo;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
@@ -222,7 +223,7 @@ public class ScreenCaptureService extends Service {
             bitmap.recycle();
             recognizer.close();
         }).addOnFailureListener(e -> {
-            showResult("Não consegui reconhecer o texto. Tente novamente.");
+            showResult("Não consegui reconhecer o texto. Escolha a PRIMEIRA opção.");
             bitmap.recycle();
             recognizer.close();
         });
@@ -233,12 +234,18 @@ public class ScreenCaptureService extends Service {
         String profile = prefs.getString(MainActivity.KEY_PROFILE, "");
 
         Set<String> profileWords = meaningfulWords(profile);
-        List<ScoredLine> lines = new ArrayList<>();
+        List<ScoredLine> scored = new ArrayList<>();
+        List<VisibleLine> visible = new ArrayList<>();
 
         for (Text.TextBlock block : text.getTextBlocks()) {
             for (Text.Line line : block.getLines()) {
                 String value = line.getText().trim();
                 if (value.length() < 2 || value.length() > 140) continue;
+
+                Rect box = line.getBoundingBox();
+                int top = box != null ? box.top : 0;
+                int left = box != null ? box.left : 0;
+                visible.add(new VisibleLine(value, top, left));
 
                 int score = 0;
                 Set<String> words = meaningfulWords(value);
@@ -247,28 +254,70 @@ public class ScreenCaptureService extends Service {
                 }
 
                 if (score > 0) {
-                    lines.add(new ScoredLine(value, score));
+                    scored.add(new ScoredLine(value, score));
                 }
             }
         }
 
-        if (lines.isEmpty()) {
-            return "Não achei uma opção claramente ligada ao seu perfil.";
+        Collections.sort(visible, new Comparator<VisibleLine>() {
+            @Override
+            public int compare(VisibleLine a, VisibleLine b) {
+                if (Math.abs(a.top - b.top) > 20) {
+                    return Integer.compare(a.top, b.top);
+                }
+                return Integer.compare(a.left, b.left);
+            }
+        });
+
+        if (scored.isEmpty()) {
+            String first = findFirstOption(visible);
+            return first != null
+                    ? "Não tive certeza. Escolha a PRIMEIRA opção:\n" + first
+                    : "Não tive certeza. Escolha a PRIMEIRA opção visível.";
         }
 
-        Collections.sort(lines, new Comparator<ScoredLine>() {
+        Collections.sort(scored, new Comparator<ScoredLine>() {
             @Override
             public int compare(ScoredLine a, ScoredLine b) {
                 return Integer.compare(b.score, a.score);
             }
         });
 
-        ScoredLine best = lines.get(0);
-        if (lines.size() > 1 && lines.get(1).score == best.score) {
-            return "Empate entre opções. Leia as opções e escolha você.";
+        ScoredLine best = scored.get(0);
+        if (scored.size() > 1 && scored.get(1).score == best.score) {
+            String first = findFirstOption(visible);
+            return first != null
+                    ? "Deu empate. Escolha a PRIMEIRA opção:\n" + first
+                    : "Deu empate. Escolha a PRIMEIRA opção visível.";
         }
 
         return "Parece combinar mais com você:\n" + best.text;
+    }
+
+    private String findFirstOption(List<VisibleLine> visible) {
+        for (VisibleLine line : visible) {
+            String n = normalize(line.text).trim();
+
+            if (n.matches("^[a-e]\\s*[\\)\\.\\-:]\\s*.+")
+                    || n.matches("^[1-9]\\s*[\\)\\.\\-:]\\s*.+")
+                    || n.matches("^[•\\-]\\s*.+")) {
+                return line.text;
+            }
+        }
+
+        boolean passedQuestion = false;
+        for (VisibleLine line : visible) {
+            if (line.text.contains("?")) {
+                passedQuestion = true;
+                continue;
+            }
+
+            if (passedQuestion && line.text.length() <= 100) {
+                return line.text;
+            }
+        }
+
+        return null;
     }
 
     private Set<String> meaningfulWords(String input) {
@@ -445,6 +494,18 @@ public class ScreenCaptureService extends Service {
         ScoredLine(String text, int score) {
             this.text = text;
             this.score = score;
+        }
+    }
+
+    private static class VisibleLine {
+        final String text;
+        final int top;
+        final int left;
+
+        VisibleLine(String text, int top, int left) {
+            this.text = text;
+            this.top = top;
+            this.left = left;
         }
     }
 }
